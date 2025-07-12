@@ -16,6 +16,7 @@ export default function Home() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
 
+  console.log('Form submitted');
   type SummarizeResponse = {
     summary: string;
     summaryUrdu: string;
