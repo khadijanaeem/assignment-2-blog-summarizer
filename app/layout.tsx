@@ -30,6 +30,7 @@ export default function RootLayout({
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             max-width: 800px;
             width: 90%;
+            white-space: pre-wrap;
           }
         `}</style>
       </head>
