@@ -11,6 +11,8 @@ export async function POST(req: Request) {
   console.log('🌐 URL received:', url);
    console.log('🪝 Starting scrape...');
   const fullText = await scrapeBlog(url);
+console.log('🔍 Scraped content preview:\n', fullText); // First 300 characters
+
   
     console.log('✅ Scraping complete');
   const summary = fakeSummarize(fullText);
@@ -23,10 +25,10 @@ export async function POST(req: Request) {
   
     console.log('🌐 written to supabase');
   await saveToMongo(fullText);
-      console.log('🌐 written to mongodb');
+      console.log('🌐 written to mongodb',fullText);
 
-console.log('SUMMARY:', summary);
-console.log('TRANSLATION:', urdu);
+//console.log('SUMMARY:', summary);
+//console.log('TRANSLATION:', urdu);
 
 
   return new Response(JSON.stringify({ summary, summaryUrdu: urdu }), { status: 200 });

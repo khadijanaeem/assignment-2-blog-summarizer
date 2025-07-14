@@ -1,24 +1,29 @@
 import { MongoClient } from 'mongodb';
 
 const client = new MongoClient(process.env.MONGO_URI!);
+const db = client.db('blog_db');
+const collection = db.collection('blogs');
 
 export async function saveToMongo(fullText: string) {
   try {
-    await client.connect();
-    const db = client.db('blog_db');
-    const collection = db.collection('blogs');
-
-    const result = await collection.insertOne({
+    await client.connect(); // Ensure connection is successful first
+    return await collection.insertOne({
       fullText,
-      createdAt: new Date()
+      createdAt: new Date(),
     });
-
-    console.log('✅ Inserted:', result.insertedId);
-    return result;
   } catch (error) {
-    console.error('❌ Mongo insert error:', error);
+    console.error('❌ MongoDB insert error:', error);
     throw error;
   } finally {
-    await client.close(); // Optional: close if not reusing
+  try {
+    await client.close();
+  } catch (closeError) {
+    if (closeError instanceof Error) {
+      console.warn('⚠️ Error closing MongoDB connection:', closeError.message);
+    } else {
+      console.warn('⚠️ Unknown error closing MongoDB connection:', closeError);
+    }
   }
+}
+
 }

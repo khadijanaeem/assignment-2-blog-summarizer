@@ -23,6 +23,7 @@ const BLACKLIST_TEXT = [
   'terms of use',
   'privacy policy',
   'advertisement',
+  'our editors will review what you’ve submitted', // ← added here
 ];
 
 export async function scrapeBlog(url: string): Promise<string> {
@@ -56,17 +57,20 @@ export async function scrapeBlog(url: string): Promise<string> {
 
     console.log(`Found ${allParagraphs.length} paragraphs inside main container.`);
 
-    // Filter paragraphs with length > 20 chars
-    const filtered = allParagraphs.filter(p => p.length > 20);
+    // Filter out short and blacklisted paragraphs
+    const filtered = allParagraphs.filter(p => {
+      const text = p.toLowerCase();
+      return (
+        p.length > 20 &&
+        !BLACKLIST_TEXT.some(blacklisted => text.includes(blacklisted))
+      );
+    });
 
-    console.log(`Filtered down to ${filtered.length} paragraphs with length > 20.`);
+    console.log(`Filtered down to ${filtered.length} paragraphs with length > 20 and no blacklisted content.`);
 
     if (filtered.length === 0) {
       return 'No meaningful content found.';
     }
-
-    // Show first paragraph for debug
-    console.log('First paragraph:', filtered[0]);
 
     return filtered.join('\n\n');
   } catch (err: any) {
